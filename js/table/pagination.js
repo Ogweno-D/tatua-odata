@@ -1,6 +1,5 @@
 export function createPaginationControls(tableInstance) {
     const pagination = document.createElement("div");
-    pagination.classList.add("pagination-controls");
 
     const prevBtn = document.createElement("button");
     prevBtn.textContent = "Previous";
@@ -33,4 +32,22 @@ export function createPaginationControls(tableInstance) {
     tableInstance.nextBtn = nextBtn;
 
     return pagination;
+}
+
+export function updatePaginationControls(tableInstance) {
+    const maxPage = Math.ceil(tableInstance.totalCount / tableInstance.queryParams.pageSize);
+
+    if (tableInstance.pageInfo) {
+        tableInstance.pageInfo.textContent = `Page ${tableInstance.queryParams.page} of ${maxPage}`;
+    }
+
+    if (tableInstance.prevBtn) {
+        tableInstance.prevBtn.disabled = tableInstance.queryParams.page === 1;
+        tableInstance.prevBtn.classList.toggle("disabled", tableInstance.queryParams.page === 1);
+    }
+
+    if (tableInstance.nextBtn) {
+        tableInstance.nextBtn.disabled = tableInstance.queryParams.page >= maxPage;
+        tableInstance.nextBtn.classList.toggle("disabled", tableInstance.queryParams.page >= maxPage);
+    }
 }

@@ -1,13 +1,35 @@
 export function createSortSection(tableInstance) {
-    const sortContainer = document.createElement("div");
-    sortContainer.classList.add("sort-container");
+    // Create overlay (if it doesn't already exist)
+    let overlay = document.getElementById("sort-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "modal-overlay";
+        overlay.classList.add("modal-overlay");
+        document.body.appendChild(overlay);
+    }
 
+    // Modal container
+    const modal = document.createElement("div");
+    modal.classList.add("modal","sort-modal");
+
+    // Header
+    const header = document.createElement("div");
+    header.classList.add("modal-header");
+    header.textContent = "Sort Options";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.classList.add("modal-close-btn");
+    closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+    closeBtn.addEventListener("click", () => (overlay.style.display = "none"));
+    header.appendChild(closeBtn);
+
+    // Sorts container
     const sortsList = document.createElement("div");
     sortsList.classList.add("sorts-list");
 
     function createSortRow() {
         const row = document.createElement("div");
-        row.classList.add("sort-row");
+        row.classList.add("modal-row");
 
         const columnSelect = document.createElement("select");
         columnSelect.innerHTML = `<option value="">Select Column</option>`;
@@ -25,19 +47,23 @@ export function createSortSection(tableInstance) {
         `;
 
         const removeBtn = document.createElement("button");
-        removeBtn.textContent = "❌";
+        removeBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        removeBtn.classList.add("remove-btn");
+
         removeBtn.addEventListener("click", () => row.remove());
 
         row.append(columnSelect, directionSelect, removeBtn);
         return row;
     }
 
-    // Start with one sort row
     sortsList.appendChild(createSortRow());
 
     const addSortBtn = document.createElement("button");
     addSortBtn.textContent = "➕ Add Sort";
     addSortBtn.addEventListener("click", () => sortsList.appendChild(createSortRow()));
+
+    const footer = document.createElement("div");
+    footer.classList.add("modal-footer");
 
     const applySortBtn = document.createElement("button");
     applySortBtn.textContent = "Apply Sorts";
@@ -51,17 +77,31 @@ export function createSortSection(tableInstance) {
         tableInstance.queryParams.sort = sortParts.join(",");
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
+        overlay.style.display = "none";
     });
+
     const resetSortBtn = document.createElement("button");
-    resetSortBtn.textContent = "🧹 Reset Sort";
+    resetSortBtn.textContent = "Reset Sort";
     resetSortBtn.addEventListener("click", () => {
         tableInstance.queryParams.sort = null;
-        sortColumnSelect.value = "";
-        sortDirectionSelect.value = "asc";
+        sortsList.innerHTML = "";
+        sortsList.appendChild(createSortRow());
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
     });
 
-    sortContainer.append(sortsList, addSortBtn, applySortBtn);
-    return sortContainer;
+    footer.append(applySortBtn, resetSortBtn);
+
+    modal.append(header, sortsList, addSortBtn, footer);
+    overlay.innerHTML = "";
+    overlay.appendChild(modal);
+
+    // click outside to close
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            overlay.style.display = "none";
+        }
+    });
+
+    return overlay;
 }

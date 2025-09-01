@@ -68,13 +68,27 @@ export class ReusableTableFromApi {
     }
 
     async loadData() {
+        // Spinner
+        const overlay = document.createElement("div");
+        overlay.classList.add("table-loader-overlay");
+
+        const spinner = document.createElement("div");
+        spinner.classList.add("table-loader-spinner");
+
+        overlay.appendChild(spinner);
+
+        //Position overlay relative to the table container
+        const parent = this.tableElement.parentNode;
+        parent.style.position = "relative";
+        parent.appendChild(overlay);
+
         try {
-            const { data, totalCount } = await this.fetchDataFn(this.queryParams);
+            const {data, totalCount} = await this.fetchDataFn(this.queryParams,this.columns);
             this.data = data;
             this.totalCount = totalCount;
             this.renderTable();
 
-            // Pagination controls (if available)
+            // Pagination controls
             const maxPage = Math.ceil(this.totalCount / this.queryParams.pageSize);
             if (this.pageInfo) {
                 this.pageInfo.textContent = `Page ${this.queryParams.page} of ${maxPage}`;
@@ -87,6 +101,15 @@ export class ReusableTableFromApi {
             }
         } catch (error) {
             console.error("Error fetching data:", error);
+            this.tableElement.innerHTML = `
+              <tbody>
+                <tr><td colspan="${this.columns.filter(c => !c.hide).length}" style="text-align:center; color:red;">
+                    Failed to load data
+                </td></tr>
+            </tbody>
+           `;
+        } finally {
+            overlay.remove();
         }
     }
 
@@ -165,5 +188,19 @@ export class ReusableTableFromApi {
         }
 
         this.tableElement.appendChild(tbody);
+
+        // Pagination wrapper and controls
+        if(this.pageInfo || this.prevBtn || this.nextBtn){
+            const paginationWrapper = document.createElement("div");
+            paginationWrapper.className = "pagination-wrapper";
+
+            if (this.prevBtn) paginationWrapper.appendChild(this.prevBtn);
+            if (this.pageInfo) paginationWrapper.appendChild(this.pageInfo);
+            if (this.nextBtn) paginationWrapper.appendChild(this.nextBtn);
+
+            this.tableElement.parentNode.appendChild(paginationWrapper);
+        }
+
     }
+
 }

@@ -1,0 +1,28 @@
+:root{
+    --primary-0: hsl(123, 67%, 94%);
+    --primary-1: hsl(125, 49%, 85%);
+    --primary-2: hsl(123, 47%, 75%);
+    --primary-3: hsl(123, 46%, 65%);
+    --primary-4: hsl(123, 46%, 55%);
+    --primary-5: hsl(122, 45%, 45%);
+    --primary-6: hsl(123, 46%, 35%);
+    --primary-7: hsl(123, 48%, 25%);
+    --primary-8: hsl(123, 51%, 15%);
+    --primary-9: hsl(120, 100%, 4%);
+
+
+    --secondary-0: hsl(120, 100%, 6%);
+
+    --font-size: 16px;
+    --font-size-1: 1rem;
+    --font-size-2: 1.2rem;
+
+    --font-family: "Lexend Deca", serif;
+}
+
+@font-face {
+    font-family: 'Lexend Deca';
+    src: url('./../assets/fonts/LexendDeca-VariableFont_wght.ttf') format('truetype');
+    font-style: normal;
+    font-display: swap;
+}

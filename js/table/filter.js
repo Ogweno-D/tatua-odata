@@ -1,18 +1,39 @@
 export function createFilterSection(tableInstance) {
-    const filterContainer = document.createElement("div");
-    filterContainer.classList.add("filter-container");
+    // Create overlay (if it doesn't already exist)
+    let overlay = document.getElementById("modal-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "modal-overlay";
+        overlay.classList.add("modal-overlay");
+        document.body.appendChild(overlay);
+    }
 
+    // Modal container
+    const modal = document.createElement("div");
+    modal.classList.add("modal","filter-modal");
+
+    // Header
+    const header = document.createElement("div");
+    header.classList.add("modal-header");
+    header.textContent = "Filters";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.classList.add("modal-close-btn");
+    closeBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+    closeBtn.addEventListener("click", () => (overlay.style.display = "none"));
+    header.appendChild(closeBtn);
+
+    // Filters container
     const filtersList = document.createElement("div");
     filtersList.classList.add("filters-list");
 
     const addFilterBtn = document.createElement("button");
-    addFilterBtn.textContent = "➕ Add Filter";
+    addFilterBtn.textContent = "Add Filter";
 
     function createFilterRow() {
         const row = document.createElement("div");
-        row.classList.add("filter-row");
+        row.classList.add("modal-row");
 
-        // Column Select
         const columnSelect = document.createElement("select");
         columnSelect.innerHTML = `<option value="" disabled selected>Select Column</option>`;
         tableInstance.columns.filter(c => c.isFilterable).forEach(column => {
@@ -22,7 +43,6 @@ export function createFilterSection(tableInstance) {
             columnSelect.appendChild(option);
         });
 
-        // Operator Select
         const operatorSelect = document.createElement("select");
         operatorSelect.innerHTML = `
             <option value="" disabled selected>Relation</option>
@@ -61,25 +81,26 @@ export function createFilterSection(tableInstance) {
             }
         });
 
-        // Remove filter button
         const removeBtn = document.createElement("button");
-        removeBtn.textContent = "❌";
+        removeBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        removeBtn.classList.add("remove-btn");
         removeBtn.addEventListener("click", () => row.remove());
 
         row.append(columnSelect, operatorSelect, valueInput, removeBtn);
         return row;
     }
 
-    // Start with one filter row
     filtersList.appendChild(createFilterRow());
     addFilterBtn.addEventListener("click", () => filtersList.appendChild(createFilterRow()));
 
-    // Apply filters
+    const footer = document.createElement("div");
+    footer.classList.add("modal-footer");
+
     const applyFilterBtn = document.createElement("button");
     applyFilterBtn.textContent = "Apply Filters";
     applyFilterBtn.addEventListener("click", () => {
-        tableInstance.queryParams.filter = {}; // reset
-        filtersList.querySelectorAll(".filter-row").forEach(row => {
+        tableInstance.queryParams.filter = {};
+        filtersList.querySelectorAll(".modal-row").forEach(row => {
             const [columnSelect, operatorSelect, valueInput] = row.querySelectorAll("select, input");
             if (columnSelect.value && operatorSelect.value && valueInput.value) {
                 tableInstance.queryParams.filter[columnSelect.value] = {
@@ -87,12 +108,15 @@ export function createFilterSection(tableInstance) {
                     value: valueInput.value
                 };
             }
+                // console.log("Filters being applied:", tableInstance.queryParams.filter);
         });
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
+        overlay.style.display = "none";
     });
+
     const resetFilterBtn = document.createElement("button");
-    resetFilterBtn.textContent = "🧹 Reset Filters";
+    resetFilterBtn.textContent = "Reset Filters";
     resetFilterBtn.addEventListener("click", () => {
         tableInstance.queryParams.filter = {};
         filtersList.innerHTML = "";
@@ -101,6 +125,18 @@ export function createFilterSection(tableInstance) {
         tableInstance.loadData();
     });
 
-    filterContainer.append(filtersList, addFilterBtn, applyFilterBtn);
-    return filterContainer;
+    footer.append(applyFilterBtn, resetFilterBtn);
+
+    modal.append(header, filtersList, addFilterBtn, footer);
+    overlay.innerHTML = ""; // clear old content
+    overlay.appendChild(modal);
+
+    // CLICK-OUTSIDE TO CLOSE
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            overlay.style.display = "none";
+        }
+    });
+
+    return overlay;
 }

@@ -1,5 +1,5 @@
 import{createSortSection} from "./sort.js";
-import{createPaginationControls} from "./pagination.js";
+import {createPaginationControls, updatePaginationControls} from "./pagination.js";
 import{createFilterSection} from "./filter.js";
 
 export function renderTableControls(tableInstance) {
@@ -8,13 +8,37 @@ export function renderTableControls(tableInstance) {
     const controlsContainer = document.createElement("div");
     controlsContainer.classList.add("table-controls");
 
-    // Create sections with smaller helper functions
-    const filterContainer = createFilterSection(tableInstance);
-    const sortContainer = createSortSection(tableInstance);
-    const paginationContainer = createPaginationControls(tableInstance);
+    const toolbar = document.createElement("div");
+    toolbar.classList.add("table-toolbar");
 
-    controlsContainer.append(filterContainer, sortContainer, paginationContainer);
+    // Create sections with smaller helper functions
+    const filterBtn = document.createElement("button");
+    filterBtn.classList.add("toolbar-btn","filter-btn");
+    filterBtn.innerHTML = `<i class="fa-solid fa-filter"></i> Filters`
+
+    const filterModal = createFilterSection(tableInstance);
+
+    filterBtn.addEventListener("click", () => {
+        filterModal.style.display = "flex";
+    });
+
+    const sortBtn = document.createElement("button");
+    sortBtn.classList.add("toolbar-btn","sort-btn");
+    sortBtn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z"></i> Filters`
+
+    const sortModal = createSortSection(tableInstance);
+    sortBtn.addEventListener("click", () => {
+        sortModal.style.display = "flex";
+    })
+
+    // const filterContainer = createFilterSection(tableInstance);
+    // const sortContainer = createSortSection(tableInstance);
+    const paginationContainer = createPaginationControls(tableInstance);
+    controlsContainer.append(filterBtn , sortBtn, paginationContainer);
 
     // Attach to DOM
     tableInstance.tableElement.parentNode.insertBefore(controlsContainer, tableInstance.tableElement);
+
+    updatePaginationControls(tableInstance);
+
 }
