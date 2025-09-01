@@ -1,3 +1,5 @@
+import {showToast} from "./utils/toast.js";
+
 const proxy = "https://api.allorigins.win/raw?url=";
 const baseUrl = "https://services.odata.org/TripPinRESTierService/People";
 
@@ -58,10 +60,12 @@ export async function fetchPeopleFromApi(queryParams, columns) {
         url += `&$orderby=${encodeURIComponent(sort)}`;
     }
 
-    console.log("Fetching:", url);
-
+    // console.log("Fetching:", url);
     const response = await fetch(proxy + encodeURIComponent(url));
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    if (!response.ok) {
+        showToast("Failed to retrieve data, try again later.", "error");
+        throw new Error(`HTTP error ${response.status}`);
+    }
 
     const json = await response.json();
     return {

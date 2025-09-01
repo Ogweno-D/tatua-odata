@@ -1,5 +1,6 @@
 // ReusableTable.js
 import {renderTableControls} from "./query.js";
+import {showToast} from "../utils/toast.js";
 
 /**
  * TableColumn factory function
@@ -101,6 +102,7 @@ export class ReusableTableFromApi {
             }
         } catch (error) {
             console.error("Error fetching data:", error);
+            showToast("Error fetching data, try again later.", "error");
             this.tableElement.innerHTML = `
               <tbody>
                 <tr><td colspan="${this.columns.filter(c => !c.hide).length}" style="text-align:center; color:red;">
