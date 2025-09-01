@@ -16,6 +16,10 @@
     --font-size: 16px;
     --font-size-1: 1rem;
     --font-size-2: 1.2rem;
+    --error: #e63946;
+    --success: #28a745;
+    --warning: #ffc107;
+    --info: #17a2b8;
 
     --font-family: "Lexend Deca", serif;
 }

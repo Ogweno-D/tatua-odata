@@ -1,0 +1,19 @@
+input[type="text"],
+select{
+    width: 100%;
+    padding: .3rem .8rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-4);
+    box-shadow: 0 0 0 3px var(--primary-6);
+}

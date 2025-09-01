@@ -1,3 +1,5 @@
+import{showToast} from "../utils/toast.js";
+
 export function createSortSection(tableInstance) {
     // Create overlay (if it doesn't already exist)
     let overlay = document.getElementById("sort-overlay");
@@ -42,6 +44,7 @@ export function createSortSection(tableInstance) {
 
         const directionSelect = document.createElement("select");
         directionSelect.innerHTML = `
+            <option value="" selected disabled>Select direction</option>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
         `;
@@ -59,13 +62,15 @@ export function createSortSection(tableInstance) {
     sortsList.appendChild(createSortRow());
 
     const addSortBtn = document.createElement("button");
-    addSortBtn.textContent = "➕ Add Sort";
+    addSortBtn.classList.add("modal-add-btn");
+    addSortBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Add Sort`;
     addSortBtn.addEventListener("click", () => sortsList.appendChild(createSortRow()));
 
     const footer = document.createElement("div");
     footer.classList.add("modal-footer");
 
     const applySortBtn = document.createElement("button");
+    applySortBtn.classList.add("modal-footer-btn","apply-btn");
     applySortBtn.textContent = "Apply Sorts";
     applySortBtn.addEventListener("click", () => {
         const sortParts = [];
@@ -78,9 +83,12 @@ export function createSortSection(tableInstance) {
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
         overlay.style.display = "none";
+        showToast("Sort applied successfully.", "success");
+
     });
 
     const resetSortBtn = document.createElement("button");
+    resetSortBtn.classList.add("modal-footer-btn");
     resetSortBtn.textContent = "Reset Sort";
     resetSortBtn.addEventListener("click", () => {
         tableInstance.queryParams.sort = null;
@@ -88,9 +96,10 @@ export function createSortSection(tableInstance) {
         sortsList.appendChild(createSortRow());
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
+        showToast("Sort reset successfully.", "success");
     });
 
-    footer.append(applySortBtn, resetSortBtn);
+    footer.append(resetSortBtn, applySortBtn);
 
     modal.append(header, sortsList, addSortBtn, footer);
     overlay.innerHTML = "";

@@ -6,10 +6,8 @@ export function renderTableControls(tableInstance) {
     if (!tableInstance.tableElement) return;
 
     const controlsContainer = document.createElement("div");
-    controlsContainer.classList.add("table-controls");
+    controlsContainer.classList.add("table-toolbar");
 
-    const toolbar = document.createElement("div");
-    toolbar.classList.add("table-toolbar");
 
     // Create sections with smaller helper functions
     const filterBtn = document.createElement("button");
@@ -24,7 +22,7 @@ export function renderTableControls(tableInstance) {
 
     const sortBtn = document.createElement("button");
     sortBtn.classList.add("toolbar-btn","sort-btn");
-    sortBtn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z"></i> Filters`
+    sortBtn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z"></i> Sort By`
 
     const sortModal = createSortSection(tableInstance);
     sortBtn.addEventListener("click", () => {

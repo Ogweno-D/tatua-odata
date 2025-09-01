@@ -1,3 +1,5 @@
+import {showToast} from "../utils/toast.js";
+
 export function createFilterSection(tableInstance) {
     // Create overlay (if it doesn't already exist)
     let overlay = document.getElementById("modal-overlay");
@@ -27,8 +29,9 @@ export function createFilterSection(tableInstance) {
     const filtersList = document.createElement("div");
     filtersList.classList.add("filters-list");
 
-    const addFilterBtn = document.createElement("button");
-    addFilterBtn.textContent = "Add Filter";
+    const addFilterBtn = document.createElement("button")
+    addFilterBtn.classList.add("modal-add-btn");
+    addFilterBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Add Filter`;
 
     function createFilterRow() {
         const row = document.createElement("div");
@@ -97,6 +100,7 @@ export function createFilterSection(tableInstance) {
     footer.classList.add("modal-footer");
 
     const applyFilterBtn = document.createElement("button");
+    applyFilterBtn.classList.add("modal-footer-btn","apply-btn");
     applyFilterBtn.textContent = "Apply Filters";
     applyFilterBtn.addEventListener("click", () => {
         tableInstance.queryParams.filter = {};
@@ -113,9 +117,12 @@ export function createFilterSection(tableInstance) {
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
         overlay.style.display = "none";
+        showToast("Filters applied successfully.", "success");
+
     });
 
     const resetFilterBtn = document.createElement("button");
+    resetFilterBtn.classList.add("modal-footer-btn");
     resetFilterBtn.textContent = "Reset Filters";
     resetFilterBtn.addEventListener("click", () => {
         tableInstance.queryParams.filter = {};
@@ -123,9 +130,11 @@ export function createFilterSection(tableInstance) {
         filtersList.appendChild(createFilterRow());
         tableInstance.queryParams.page = 1;
         tableInstance.loadData();
+        showToast("Filters reset successfully.", "success");
+
     });
 
-    footer.append(applyFilterBtn, resetFilterBtn);
+    footer.append(resetFilterBtn, applyFilterBtn);
 
     modal.append(header, filtersList, addFilterBtn, footer);
     overlay.innerHTML = ""; // clear old content

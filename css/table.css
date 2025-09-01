@@ -113,7 +113,7 @@ tbody tr:last-child td{
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 6px;
-    justify-content: flex-end; /* buttons aligned to right */
+    justify-content: flex-end;
 }
 
 /* Toolbar buttons */

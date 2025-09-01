@@ -17,7 +17,7 @@
     background: white;
     border-radius: 8px;
     width: 90%;
-    padding: 1rem;
+    padding: 1.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
@@ -27,7 +27,6 @@
 .modal button {
     background: none;
     border: none;
-    font-weight: bold;
     cursor: pointer;
 }
 
@@ -47,6 +46,8 @@
     align-items: center;
     font-weight: bold;
     font-size: 1.2rem;
+    padding: .2rem;
+    margin-bottom: 1rem;
 }
 
 /*  */
@@ -55,6 +56,14 @@
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
+}
+
+.modal-add-btn{
+    display: flex;
+    gap: .2rem;
+    align-items: center;
+    text-align: start;
+    font-size: 1.1rem;
 }
 
 /*  */
@@ -68,6 +77,25 @@
     cursor: pointer;
     text-decoration: underline;
 }
+
+.modal-footer-btn{
+    font-weight: 600;
+    font-size: .9rem;
+    padding:.3rem;
+
+}
+.modal-footer-btn.apply-btn{
+    margin-left: 0;
+    color: white;
+    background: var(--primary-6);
+    border-radius: 6px;
+}
+.modal-footer-btn.apply-btn:hover{
+    background: var(--primary-2);
+    color: var(--primary-8);
+    transition: background-color .2s ease-in-out;
+}
+
 /*  */
 .modal-row {
     display: flex;
