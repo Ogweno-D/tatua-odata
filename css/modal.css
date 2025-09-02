@@ -87,12 +87,12 @@
 .modal-footer-btn.apply-btn{
     margin-left: 0;
     color: white;
-    background: var(--primary-6);
+    /*background: var(--primary-6);*/
     border-radius: 6px;
 }
 .modal-footer-btn.apply-btn:hover{
-    background: var(--primary-2);
-    color: var(--primary-8);
+    /*background: var(--primary-2);*/
+    /*color: var(--primary-8);*/
     transition: background-color .2s ease-in-out;
 }
 

@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
             { data: [], totalCount: 0, queryParams },
             peopleTableConfig
         );
+        peopleTable.tableElement.classList.add("table-default","people-theme");
+
         peopleTable.queryParams = queryParams;
 
         async function reloadTable() {
@@ -78,63 +80,65 @@ document.addEventListener("DOMContentLoaded", () => {
     //     "people2Table", fetchPeopleFromApi, people2TableConfig
     // );
 
-    // const productsTableConfig = {
-    //     columns: [
-    //         {
-    //             id: "name",
-    //             caption: "Product Name",
-    //             isSortable: true,
-    //             isFilterable: true
-    //         },
-    //         {
-    //             id: "price",
-    //             caption: "Price",
-    //             isSortable: true,
-    //             isFilterable: false
-    //         },
-    //         {
-    //             id: "stock",
-    //             caption: "Stock",
-    //             isSortable: true,
-    //             isFilterable: false
-    //         }
-    //     ],
-    //     tableClass: "products-table",
-    //     rowClass: "product-row"
-    // };
-    //
-    // async function initProductsTable() {
-    //     const tableId = "products-table"; // unique ID
-    //     let queryParams = loadTableState(tableId) || {
-    //         page: 1,
-    //         pageSize: 10,
-    //         sort: null,
-    //         filter: {}
-    //     };
-    //
-    //     const productsTable = new ReusableTableFromApi(
-    //         tableId,
-    //         { data: [], totalCount: 0, queryParams },
-    //         productsTableConfig
-    //     );
-    //     productsTable.queryParams = queryParams;
-    //
-    //     async function reloadTable() {
-    //         const result = await loadData(queryParams, mockProductsData, productsTable.columns, productsTable);
-    //         productsTable.data = result.data;
-    //         productsTable.totalCount = result.totalCount;
-    //         productsTable.renderTable();
-    //         updatePaginationControls(productsTable);
-    //         saveTableState(tableId, queryParams);
-    //     }
-    //
-    //     productsTable.reloadTable = reloadTable;
-    //     const paginationControls = createPaginationControls(productsTable);
-    //     productsTable.tableElement.parentNode.appendChild(paginationControls);
-    //     await reloadTable();
-    // }
-    //
-    // initProductsTable();
+    const productsTableConfig = {
+        columns: [
+            {
+                id: "name",
+                caption: "Product Name",
+                isSortable: true,
+                isFilterable: true
+            },
+            {
+                id: "price",
+                caption: "Price",
+                isSortable: true,
+                isFilterable: false
+            },
+            {
+                id: "stock",
+                caption: "Stock",
+                isSortable: true,
+                isFilterable: false
+            }
+        ],
+        tableClass: "products-table",
+        rowClass: "product-row"
+    };
+
+    async function initProductsTable() {
+        const tableId = "products-table"; // unique ID
+        let queryParams = loadTableState(tableId) || {
+            page: 1,
+            pageSize: 10,
+            sort: null,
+            filter: {}
+        };
+
+        const productsTable = new ReusableTableFromApi(
+            tableId,
+            { data: [], totalCount: 0, queryParams },
+            productsTableConfig
+        );
+
+        productsTable.tableElement.classList.add("table-default","products-theme");
+        productsTable.queryParams = queryParams;
+
+        async function reloadTable() {
+            const result = await loadData(queryParams, mockProductsData, productsTable.columns, productsTable);
+            productsTable.data = result.data;
+            productsTable.totalCount = result.totalCount;
+            productsTable.renderTable();
+            updatePaginationControls(productsTable);
+            saveTableState(tableId, queryParams);
+        }
+
+        productsTable.reloadTable = reloadTable;
+        const paginationControls = createPaginationControls(productsTable);
+        productsTable.tableElement.parentNode.appendChild(paginationControls);
+        await reloadTable();
+    }
+
+    initProductsTable();
 
 
 });

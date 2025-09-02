@@ -1,0 +1,50 @@
+
+
+/* ===== Products Table Theme ===== */
+.products-theme th {
+    background-color: var(--secondary-5);
+    color: #fff;
+}
+
+.products-theme tbody tr:nth-child(even) {
+    background-color: var(--secondary-0);
+}
+
+.products-theme ~ .pagination-wrapper button {
+    background: var(--secondary-6);
+    color: white;
+}
+
+.products-theme ~ .pagination-wrapper button:hover {
+    background: var(--secondary-1);
+    color: black;
+}
+
+.products-theme ~ .table-loader-overlay .table-loader-spinner {
+    border: 4px solid #aaa;
+    border-top: 4px solid var(--secondary-8);
+}
+
+
+
+/* Form*/
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--secondary-4);
+    box-shadow: 0 0 0 3px var(--secondary-6);
+}
+
+/* Modal*/
+.modal-footer-btn.apply-btn{
+    margin-left: 0;
+    color: white;
+    background: var(--secondary-6);
+    border-radius: 6px;
+}
+.modal-footer-btn.apply-btn:hover{
+    background: var(--secondary-2);
+    color: var(--secondary-8);
+    transition: background-color .2s ease-in-out;
+}

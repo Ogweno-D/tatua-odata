@@ -11,7 +11,16 @@
     --primary-9: hsl(120, 100%, 4%);
 
 
-    --secondary-0: hsl(120, 100%, 6%);
+    --secondary-0: hsl(268,100%, 96%, 100%);
+    --secondary-1: hsl(265,40%, 86%, 100%);
+    --secondary-2: hsl(266,33%, 75%, 100%);
+    --secondary-3: hsl(264,32%, 65%, 100%);
+    --secondary-4: hsl(265,31%, 55%, 100%);
+    --secondary-5: hsl(265,31%, 45%, 100%);
+    --secondary-6: hsl(265,32%, 35%, 100%);
+    --secondary-7: hsl(263,32%, 25%, 100%);
+    --secondary-8: hsl(266,36%, 15%, 100%);
+    --secondary-9: hsl(265,55%, 6%, 100%);
 
     --font-size: 16px;
     --font-size-1: 1rem;

@@ -25,7 +25,7 @@ export function createPaginationControls(tableInstance) {
     [5,10,20,50,100].forEach(size => {
         const option = document.createElement("option");
         option.value = size;
-        option.textContent = `${size} per page`;
+        option.textContent = `${size} records per page`;
 
         if(tableInstance.queryParams.pageSize === size){
             option.selected = true;
