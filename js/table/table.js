@@ -1,7 +1,5 @@
 // ReusableTable.js
 import {renderTableControls} from "./query.js";
-import {showToast} from "../utils/toast.js";
-
 /**
  * TableColumn factory function
  * Allows easy definition of table columns with default values.
@@ -47,78 +45,70 @@ export function TableColumn(config) {
  * Dynamically renders a table and handles pagination, filtering, and sorting
  */
 export class ReusableTableFromApi {
-    constructor(tableId, fetchDataFn, tableConfig) {
-        this.tableElement = document.getElementById(tableId);
+    constructor(tableId, dataWrapper, tableConfig) {
+        this.tableId = tableId;
         this.columns = tableConfig.columns;
-        this.fetchDataFn = fetchDataFn;
+
+        this.data = dataWrapper.data || [];
+        this.totalCount = dataWrapper?.totalCount ?? this.data.length;
 
         // Query state
-        this.queryParams = {
-            filter: {},
-            sort: null,
-            page: 1,
-            pageSize: 5,
-        };
+        this.queryParams = dataWrapper.queryParams || {};
+        console.log(this.queryParams)
+        // this.queryParams = {
+        //     filter: {},
+        //     sort: null,
+        //     page: 1,
+        //     pageSize: 20,
+        // };
 
         this.totalCount = 0;
         this.data = [];
+        this.tableElement = document.getElementById(this.tableId);
 
-        renderTableControls(this)
-        // Load initial data
-        this.loadData();
-    }
 
-    async loadData() {
-        // Spinner
-        const overlay = document.createElement("div");
-        overlay.classList.add("table-loader-overlay");
+        // Load saved state
+        // const savedState = loadTableState(this.tableId);
+        // if (savedState) {
+        //     this.queryParams = savedState;
+        // }
 
-        const spinner = document.createElement("div");
-        spinner.classList.add("table-loader-spinner");
-
-        overlay.appendChild(spinner);
-
-        //Position overlay relative to the table container
-        const parent = this.tableElement.parentNode;
-        parent.style.position = "relative";
-        parent.appendChild(overlay);
-
-        try {
-            const {data, totalCount} = await this.fetchDataFn(this.queryParams,this.columns);
-            this.data = data;
-            this.totalCount = totalCount;
-            this.renderTable();
-
-            // Pagination controls
-            const maxPage = Math.ceil(this.totalCount / this.queryParams.pageSize);
-            if (this.pageInfo) {
-                this.pageInfo.textContent = `Page ${this.queryParams.page} of ${maxPage}`;
-            }
-            if (this.prevBtn) {
-                this.prevBtn.disabled = this.queryParams.page === 1;
-            }
-            if (this.nextBtn) {
-                this.nextBtn.disabled = this.queryParams.page >= maxPage;
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            showToast("Error fetching data, try again later.", "error");
-            this.tableElement.innerHTML = `
-              <tbody>
-                <tr><td colspan="${this.columns.filter(c => !c.hide).length}" style="text-align:center; color:red;">
-                    Failed to load data
-                </td></tr>
-            </tbody>
-           `;
-        } finally {
-            overlay.remove();
+        if (!this.tableElement) {
+            console.warn(
+                `[ReusableTableFromApi] Table element with id="${this.tableId}" not found yet. Retrying...`
+            );
+            this.retryFindTable();
+        } else {
+            this.initialize();
         }
     }
 
+    retryFindTable(attempt = 1) {
+        if (attempt > 10) {
+            console.error(
+                `[ReusableTableFromApi] Failed to find table with id="${this.tableId}" after 10 attempts.`
+            );
+            return;
+        }
+
+        setTimeout(() => {
+            this.tableElement = document.getElementById(this.tableId);
+            if (this.tableElement) {
+                console.log(`[ReusableTableFromApi] Found table "${this.tableId}" after ${attempt} retries`);
+                this.initialize();
+            } else {
+                this.retryFindTable(attempt + 1);
+            }
+        }, 100); // retry every 100ms
+    }
+
+    initialize() {
+        renderTableControls(this);
+    }
 
     renderTable() {
         if (!this.tableElement) {
-            console.error("No table element found");
+            console.error(`[ReusableTableFromApi] Cannot render table — tableElement is null`);
             return;
         }
 
@@ -160,15 +150,13 @@ export class ReusableTableFromApi {
                             td.textContent = row[key] ?? "-";
                         }
 
-                        if (column.onRendered) {
-                            column.onRendered(td, row);
-                        }
+                        if (column.onRendered) column.onRendered(td, row);
 
                         if (column.events) {
                             Object.entries(column.events).forEach(([selector, handler]) => {
-                                td.querySelectorAll(selector).forEach(element => {
-                                    element.addEventListener("click", (event) => handler(row, event));
-                                });
+                                td.querySelectorAll(selector).forEach(element =>
+                                    element.addEventListener("click", event => handler(row, event))
+                                );
                             });
                         }
 
@@ -179,7 +167,7 @@ export class ReusableTableFromApi {
                 tbody.appendChild(tableRow);
             });
         } else {
-            // Empty state row
+            // Empty state
             const emptyRow = document.createElement("tr");
             const emptyCell = document.createElement("td");
             emptyCell.colSpan = this.columns.filter(c => !c.hide).length;
@@ -191,18 +179,17 @@ export class ReusableTableFromApi {
 
         this.tableElement.appendChild(tbody);
 
-        // Pagination wrapper and controls
-        if(this.pageInfo || this.prevBtn || this.nextBtn){
+        // Pagination controls
+        if (this.switcher || this.paginationButton) {
             const paginationWrapper = document.createElement("div");
             paginationWrapper.className = "pagination-wrapper";
 
-            if (this.prevBtn) paginationWrapper.appendChild(this.prevBtn);
-            if (this.pageInfo) paginationWrapper.appendChild(this.pageInfo);
-            if (this.nextBtn) paginationWrapper.appendChild(this.nextBtn);
+            if (this.switcher) paginationWrapper.appendChild(this.switcher)
+            if (this.paginationButton) paginationWrapper.appendChild(this.paginationButton);
+            // if (this.pageInfo) paginationWrapper.appendChild(this.pageInfo);
+            // if (this.nextBtn) paginationWrapper.appendChild(this.nextBtn);
 
             this.tableElement.parentNode.appendChild(paginationWrapper);
         }
-
     }
-
 }

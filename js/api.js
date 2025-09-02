@@ -27,7 +27,6 @@ export async function fetchPeopleFromApi(queryParams, columns) {
 
             if (column) {
                 if (column.enumValues) {
-                    // Enums are NOT quoted in OData
                     formattedValue = column.enumValues.includes(value) ? value : value;
                 } else if (column.type === "number") {
                     formattedValue = Number(value);

@@ -1,5 +1,4 @@
 import{createSortSection} from "./sort.js";
-import {createPaginationControls, updatePaginationControls} from "./pagination.js";
 import{createFilterSection} from "./filter.js";
 
 export function renderTableControls(tableInstance) {
@@ -31,12 +30,9 @@ export function renderTableControls(tableInstance) {
 
     // const filterContainer = createFilterSection(tableInstance);
     // const sortContainer = createSortSection(tableInstance);
-    const paginationContainer = createPaginationControls(tableInstance);
-    controlsContainer.append(filterBtn , sortBtn, paginationContainer);
+    // const paginationContainer = createPaginationControls(tableInstance);
+    controlsContainer.append(filterBtn , sortBtn);
 
     // Attach to DOM
     tableInstance.tableElement.parentNode.insertBefore(controlsContainer, tableInstance.tableElement);
-
-    updatePaginationControls(tableInstance);
-
 }

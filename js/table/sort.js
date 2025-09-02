@@ -29,9 +29,29 @@ export function createSortSection(tableInstance) {
     const sortsList = document.createElement("div");
     sortsList.classList.add("sorts-list");
 
+    sortsList.innerHTML = "";
+    const activeSorts = tableInstance.queryParams.sort;
+    if (activeSorts) {
+        const sortParts = activeSorts.split(",").map(sort => sort.trim());
+
+        sortParts.forEach(sort => {
+            const[column, direction] = sort.split(" ")
+            const row = createSortRow();
+
+            const[columnSelect, directionSelect] = row.querySelectorAll("select");
+            columnSelect.value = column;
+            directionSelect.value = direction
+
+            sortsList.appendChild(row);
+        })
+
+    } else {
+        sortsList.appendChild(createSortRow());
+    }
+
     function createSortRow() {
         const row = document.createElement("div");
-        row.classList.add("modal-row");
+        row.classList.add("modal-row","sort-row");
 
         const columnSelect = document.createElement("select");
         columnSelect.innerHTML = `<option value="">Select Column</option>`;
@@ -81,10 +101,12 @@ export function createSortSection(tableInstance) {
 
         tableInstance.queryParams.sort = sortParts.join(",");
         tableInstance.queryParams.page = 1;
-        tableInstance.loadData();
+
         overlay.style.display = "none";
         showToast("Sort applied successfully.", "success");
-
+        if(typeof tableInstance.reloadTable === "function") {
+            tableInstance.reloadTable();
+        }
     });
 
     const resetSortBtn = document.createElement("button");
@@ -95,8 +117,13 @@ export function createSortSection(tableInstance) {
         sortsList.innerHTML = "";
         sortsList.appendChild(createSortRow());
         tableInstance.queryParams.page = 1;
-        tableInstance.loadData();
+
+        if(typeof tableInstance.reloadTable === "function") {
+            tableInstance.reloadTable();
+        }
+        overlay.style.display = "none";
         showToast("Sort reset successfully.", "success");
+
     });
 
     footer.append(resetSortBtn, applySortBtn);

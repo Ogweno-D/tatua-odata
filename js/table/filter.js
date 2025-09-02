@@ -29,13 +29,35 @@ export function createFilterSection(tableInstance) {
     const filtersList = document.createElement("div");
     filtersList.classList.add("filters-list");
 
+    //Prepopulate active filters
+    filtersList.innerHTML = "";
+    const activeFilters = tableInstance.queryParams.filter || {};
+    // console.log(activeFilters);
+    const hasFilters = Object.keys(activeFilters).length > 0
+    if (hasFilters) {
+        Object.entries(activeFilters).forEach(([column, { operator, value }]) => {
+            const row = createFilterRow();
+            const [columnSelect, operatorSelect, valueInput] = row.querySelectorAll("select, input");
+
+            columnSelect.value = column;
+            operatorSelect.value = operator;
+            valueInput.value = value;
+
+            filtersList.appendChild(row);
+        });
+    }
+    if(!hasFilters) {
+        filtersList.appendChild(createFilterRow());
+    }
+
+
     const addFilterBtn = document.createElement("button")
     addFilterBtn.classList.add("modal-add-btn");
     addFilterBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Add Filter`;
 
     function createFilterRow() {
         const row = document.createElement("div");
-        row.classList.add("modal-row");
+        row.classList.add("modal-row", "filter-row");
 
         const columnSelect = document.createElement("select");
         columnSelect.innerHTML = `<option value="" disabled selected>Select Column</option>`;
@@ -104,7 +126,7 @@ export function createFilterSection(tableInstance) {
     applyFilterBtn.textContent = "Apply Filters";
     applyFilterBtn.addEventListener("click", () => {
         tableInstance.queryParams.filter = {};
-        filtersList.querySelectorAll(".modal-row").forEach(row => {
+        filtersList.querySelectorAll(".filter-row").forEach(row => {
             const [columnSelect, operatorSelect, valueInput] = row.querySelectorAll("select, input");
             if (columnSelect.value && operatorSelect.value && valueInput.value) {
                 tableInstance.queryParams.filter[columnSelect.value] = {
@@ -112,13 +134,15 @@ export function createFilterSection(tableInstance) {
                     value: valueInput.value
                 };
             }
-                // console.log("Filters being applied:", tableInstance.queryParams.filter);
         });
+
         tableInstance.queryParams.page = 1;
-        tableInstance.loadData();
         overlay.style.display = "none";
         showToast("Filters applied successfully.", "success");
 
+        if (typeof tableInstance.reloadTable === "function") {
+            tableInstance.reloadTable();
+        }
     });
 
     const resetFilterBtn = document.createElement("button");
@@ -129,10 +153,15 @@ export function createFilterSection(tableInstance) {
         filtersList.innerHTML = "";
         filtersList.appendChild(createFilterRow());
         tableInstance.queryParams.page = 1;
-        tableInstance.loadData();
+
         showToast("Filters reset successfully.", "success");
 
+        if (typeof tableInstance.reloadTable === "function") {
+            tableInstance.reloadTable();
+        }
+        overlay.style.display = "none";
     });
+
 
     footer.append(resetFilterBtn, applyFilterBtn);
 
